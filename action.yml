@@ -1,5 +1,5 @@
 name: Calldiff PR Comment
-description: Run calldiff between pull request commits and keep the result in one PR comment.
+description: Show call-flow changes on every pull request in one automatically updated comment.
 author: Lev Dubinets
 
 branding:

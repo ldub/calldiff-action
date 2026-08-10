@@ -6,7 +6,7 @@ The action compares the PR's exact base and head commits, updates the same comme
 
 ## Quick start: fastest and cheapest
 
-After this repository's first `v1` release, add `.github/workflows/calldiff.yml` to your project:
+Add `.github/workflows/calldiff.yml` to your project:
 
 ```yaml
 name: Calldiff
@@ -41,6 +41,8 @@ jobs:
 ```
 
 That is all the configuration needed. `pull-requests: write` lets the action create its comment; `contents: read` is enough to check out and analyze the code.
+
+`@v1` follows backwards-compatible releases and is the recommended pin for most projects. Use `@v1.0.0` or a full commit SHA when your workflow requires an immutable version.
 
 ## Common options
 
@@ -205,14 +207,14 @@ Because this is a composite action, selecting Node 24 updates `PATH` for later s
 
 Self-hosted runners must support Node 24 actions (GitHub Actions Runner `v2.327.1` or newer), and need Git, npm registry access, and Bash.
 
-## Development and Marketplace release
+## Development and releases
 
 ```bash
 npm ci
 npm run check
 ```
 
-The repository has one root `action.yml`, Marketplace metadata and branding, immutable pins for its own action dependencies, unit tests, a local-action integration check, daily calldiff update monitoring, and Dependabot configuration. See [RELEASING.md](RELEASING.md) for the first release, moving `v1` tag, and Marketplace checklist.
+The stable `v1` release line includes Marketplace metadata and branding, immutable pins for its own action dependencies, unit tests, a local-action integration check, daily calldiff update monitoring, and Dependabot configuration. See [CHANGELOG.md](CHANGELOG.md) for release notes and [RELEASING.md](RELEASING.md) for the release process and Marketplace checklist.
 
 ## License
 
