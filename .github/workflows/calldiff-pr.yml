@@ -2,6 +2,7 @@ name: Calldiff
 
 on:
   pull_request:
+    branches: [lev/calldiff-showcase-base]
     types: [opened, synchronize, reopened, ready_for_review]
 
 permissions:
@@ -24,6 +25,11 @@ jobs:
           persist-credentials: false
 
       - name: Comment with the call-flow diff
-        uses: ldub/calldiff-action@de73dbea70db34896554a9c451e5dd1cb373cf76
+        uses: ldub/calldiff-action@v1
         with:
-          paths: examples
+          base-ref: HEAD^1
+          head-ref: HEAD^2
+          paths: showcase/src
+          entrypoints: checkout
+          max-depth: 3
+          comment-header: '## calldiff · checkout flow'
