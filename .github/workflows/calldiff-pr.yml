@@ -1,0 +1,29 @@
+name: Calldiff
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: calldiff-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  calldiff:
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the pull request
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        with:
+          fetch-depth: 2
+          persist-credentials: false
+
+      - name: Comment with the call-flow diff
+        uses: ldub/calldiff-action@27a7dea69cc6a809ec37fbdf3f1fa6ff8c20b908
+        with:
+          paths: examples
