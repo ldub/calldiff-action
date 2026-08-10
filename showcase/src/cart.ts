@@ -1,6 +1,6 @@
 export function validateCart() {
   checkItemAvailability()
-  validateCoupon()
+  validatePurchaseLimits()
 }
 
 export function calculateSubtotal() {
@@ -8,7 +8,7 @@ export function calculateSubtotal() {
 }
 
 function checkItemAvailability() {}
-function validateCoupon() {}
+function validatePurchaseLimits() {}
 function sumLineItems() {
   return 42
 }

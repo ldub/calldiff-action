@@ -1,5 +1,11 @@
-export function chargeCard(total: number) {
-  createCharge(total)
+export function authorizePayment(total: number) {
+  tokenizeCard()
+  runFraudScreen()
+  createAuthorization(total)
 }
 
-function createCharge(_total: number) {}
+export function capturePayment(_total: number) {}
+
+function tokenizeCard() {}
+function runFraudScreen() {}
+function createAuthorization(_total: number) {}

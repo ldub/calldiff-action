@@ -1,3 +1,11 @@
-# Checkout flow showcase
+# Risk-aware checkout showcase
 
-This branch is the intentionally small “before” state for a calldiff showcase pull request. The pull request replaces a direct checkout pipeline with pricing, risk, fulfillment, payment, and event orchestration so the action can render a realistic call-flow review.
+This example evolves a direct checkout pipeline into a safer orchestration flow. The implementation now:
+
+- validates item availability and purchase limits;
+- evaluates customer and transaction risk before reserving stock;
+- records the inventory reservation;
+- separates payment authorization from capture; and
+- publishes an order event for customer and warehouse notifications.
+
+The code stays intentionally small so the pull request’s calldiff comment is easy to scan on desktop and mobile.
