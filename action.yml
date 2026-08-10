@@ -1,5 +1,5 @@
 name: Calldiff PR Comment
-description: Show calldiff call-flow changes in one automatically updated pull request comment.
+description: Show call-flow changes on every pull request in one automatically updated comment.
 author: Lev Dubinets
 
 branding:
