@@ -1,0 +1,38 @@
+name: Calldiff latest canary
+
+on:
+  schedule:
+    - cron: '17 9 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  latest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        with:
+          fetch-depth: 2
+          persist-credentials: false
+
+      - name: Create a two-commit fixture repository
+        run: node scripts/create-integration-fixture.mjs "${{ runner.temp }}/calldiff-fixture"
+
+      - name: Exercise the newest published calldiff on a changed call tree
+        id: calldiff
+        uses: ./
+        with:
+          working-directory: ${{ runner.temp }}/calldiff-fixture
+          base-ref: HEAD~1
+          head-ref: HEAD
+          calldiff-version: latest
+          comment: 'false'
+
+      - name: Verify the changed-tree result
+        env:
+          CALLDIFF_HAS_CHANGES: ${{ steps.calldiff.outputs.has-changes }}
+          CALLDIFF_RESULT_FILE: ${{ steps.calldiff.outputs.result-file }}
+        run: node scripts/assert-integration-result.mjs "$CALLDIFF_HAS_CHANGES" "$CALLDIFF_RESULT_FILE"

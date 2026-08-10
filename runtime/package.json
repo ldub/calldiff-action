@@ -1,0 +1,9 @@
+{
+  "name": "calldiff-action-runtime",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Locked dependency graph used by calldiff-action's tested version.",
+  "dependencies": {
+    "calldiff": "0.4.1"
+  }
+}

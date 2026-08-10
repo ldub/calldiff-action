@@ -1,0 +1,124 @@
+name: Calldiff isolated PR comment
+
+on:
+  workflow_call:
+    inputs:
+      calldiff-version:
+        description: calldiff npm version or dist-tag.
+        type: string
+        default: tested
+      working-directory:
+        description: Checked-out repository path, relative to GITHUB_WORKSPACE.
+        type: string
+        default: '.'
+      paths:
+        description: Optional path prefixes, one per line.
+        type: string
+        default: ''
+      entrypoints:
+        description: Optional function or method entrypoints, one per line.
+        type: string
+        default: ''
+      max-depth:
+        description: Maximum call-tree depth.
+        type: number
+        default: 12
+      extra-args-json:
+        description: JSON array of additional calldiff arguments.
+        type: string
+        default: '[]'
+      update-comment:
+        description: Update the existing sticky comment.
+        type: boolean
+        default: true
+      comment-header:
+        description: Markdown heading shown at the top of the pull request comment.
+        type: string
+        default: '## calldiff'
+      max-comment-length:
+        description: Maximum UTF-8 bytes before the displayed result is truncated.
+        type: number
+        default: 60000
+      fail-on-error:
+        description: Fail when calldiff cannot complete.
+        type: boolean
+        default: true
+      fail-on-warnings:
+        description: Fail when calldiff reports parser or grammar warnings.
+        type: boolean
+        default: false
+      fail-on-comment-error:
+        description: Fail on unexpected comment errors.
+        type: boolean
+        default: true
+      timeout-seconds:
+        description: Per-command timeout for installing and running calldiff.
+        type: number
+        default: 300
+    secrets:
+      token:
+        description: Optional token used instead of the caller's GITHUB_TOKEN.
+        required: false
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      artifact-id: ${{ steps.upload.outputs.artifact-id }}
+    steps:
+      - name: Check out the pull request
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        with:
+          fetch-depth: 2
+          persist-credentials: false
+
+      - name: Analyze the changed call flow without a write token
+        id: calldiff
+        uses: ldub/calldiff-action@v1.0.0 # zizmor: ignore[unpinned-uses] immutable self-release tag avoids an impossible self-SHA pin
+        with:
+          calldiff-version: ${{ inputs.calldiff-version }}
+          working-directory: ${{ inputs.working-directory }}
+          paths: ${{ inputs.paths }}
+          entrypoints: ${{ inputs.entrypoints }}
+          max-depth: ${{ inputs.max-depth }}
+          extra-args-json: ${{ inputs.extra-args-json }}
+          comment: 'false'
+          comment-header: ${{ inputs.comment-header }}
+          max-comment-length: ${{ inputs.max-comment-length }}
+          fail-on-error: ${{ inputs.fail-on-error }}
+          fail-on-warnings: ${{ inputs.fail-on-warnings }}
+          timeout-seconds: ${{ inputs.timeout-seconds }}
+
+      - name: Transfer the size-capped comment to the fresh comment job
+        id: upload
+        if: ${{ always() && steps.calldiff.outputs.comment-file != '' }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: calldiff-comment-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ steps.calldiff.outputs.comment-file }}
+          if-no-files-found: error
+          retention-days: 1
+
+  comment:
+    needs: analyze
+    if: ${{ always() && needs.analyze.outputs.artifact-id != '' }}
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Download the exact analysis artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          artifact-ids: ${{ needs.analyze.outputs.artifact-id }}
+          path: ${{ runner.temp }}/calldiff-comment
+
+      - name: Update the pull request comment from the fresh runner
+        uses: ldub/calldiff-action@v1.0.0 # zizmor: ignore[unpinned-uses] immutable self-release tag avoids an impossible self-SHA pin
+        with:
+          post-comment-file: ${{ runner.temp }}/calldiff-comment/calldiff-comment.md
+          pr-number: ${{ github.event.pull_request.number }}
+          token: ${{ secrets.token || github.token }}
+          update-comment: ${{ inputs.update-comment }}
+          fail-on-comment-error: ${{ inputs.fail-on-comment-error }}

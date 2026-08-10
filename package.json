@@ -1,0 +1,20 @@
+{
+  "name": "calldiff-action",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Run calldiff on pull requests and keep the result in a sticky GitHub comment.",
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "test": "node --test",
+    "test:coverage": "node --test --experimental-test-coverage",
+    "check": "npm test && node scripts/check-repository.mjs"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ldub/calldiff-action.git"
+  }
+}
