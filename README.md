@@ -4,6 +4,8 @@ Run [calldiff](https://github.com/tanishqkancharla/calldiff) for every pull requ
 
 The action compares the PR's exact base and head commits, updates the same comment after each push, writes the result to the GitHub Actions job summary, and does not install or execute your project's dependencies.
 
+![Calldiff PR comment showing a checkout call-flow diff](docs/assets/calldiff-checkout-flow.png)
+
 ## Quick start: fastest and cheapest
 
 Add `.github/workflows/calldiff.yml` to your project:

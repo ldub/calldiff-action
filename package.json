@@ -1,6 +1,6 @@
 {
   "name": "calldiff-action",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "description": "Run calldiff on pull requests and keep the result in a sticky GitHub comment.",
   "type": "module",

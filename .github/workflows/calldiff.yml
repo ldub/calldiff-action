@@ -76,7 +76,7 @@ jobs:
 
       - name: Analyze the changed call flow without a write token
         id: calldiff
-        uses: ldub/calldiff-action@v1.0.0 # zizmor: ignore[unpinned-uses] immutable self-release tag avoids an impossible self-SHA pin
+        uses: ldub/calldiff-action@v1.0.1 # zizmor: ignore[unpinned-uses] immutable self-release tag avoids an impossible self-SHA pin
         with:
           calldiff-version: ${{ inputs.calldiff-version }}
           working-directory: ${{ inputs.working-directory }}
@@ -115,7 +115,7 @@ jobs:
           path: ${{ runner.temp }}/calldiff-comment
 
       - name: Update the pull request comment from the fresh runner
-        uses: ldub/calldiff-action@v1.0.0 # zizmor: ignore[unpinned-uses] immutable self-release tag avoids an impossible self-SHA pin
+        uses: ldub/calldiff-action@v1.0.1 # zizmor: ignore[unpinned-uses] immutable self-release tag avoids an impossible self-SHA pin
         with:
           post-comment-file: ${{ runner.temp }}/calldiff-comment/calldiff-comment.md
           pr-number: ${{ github.event.pull_request.number }}
